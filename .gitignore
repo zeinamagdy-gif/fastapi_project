@@ -1,0 +1,16 @@
+<<<<<<< HEAD
+.venv/
+__pycache__/
+*.pyc
+.env
+.vscode/
+*.rar 
+*.rar 
+=======
+venv/
+.venv/
+.idea/
+__pycache__/
+*.pyc
+.env
+>>>>>>> b9d79c7 (Initial commit)

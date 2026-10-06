@@ -1,0 +1,25 @@
+[project]
+name = "pythonproject4"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "zeinamagdy-gif", email = "zeinamagdy-gif@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "fastapi>=0.142.2",
+    "fastapi-users[sqlalchemy]>=15.0.5",
+    "imagekitio>=5.10.0",
+    "pydantic>=2.13.5",
+    "python-dotenv>=1.2.4",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+pythonproject4 = "pythonproject4:main"
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"

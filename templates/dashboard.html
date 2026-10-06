@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ current_page_title }}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Bootstrap & FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    .dark {
+      background-color: #222;
+      color: #ddd;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 250px;
+      background: #f8f9fa;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .dark .topbar {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #f4f6f8;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+    }
+
+    #sidebarToggle {
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar, .main-content {
+      transition: margin-left 0.3s ease;
+    }
+    .dark .sidebar {
+      background-color: #333;
+      border-color: #555;
+    }
+
+    .nav-links li {
+      margin-bottom: 15px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+      display: block;
+      padding: 8px 10px;
+      border-radius: 5px;
+    }
+
+    .nav-links a:hover {
+      background-color: #e9ecef;
+    }
+
+    .dark .nav-links a {
+      color: #9ec1cf;
+    }
+
+    .dark .nav-links a:hover {
+      background-color: #444;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 90px 20px 20px;
+    }
+
+    #embedContainer {
+      width: 100%;
+      height: 800px;
+      border: none;
+    }
+
+    #zoomControls {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .toggle-dark-mode {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: inherit;
+    }
+    body.dark {
+  background-color: #222;
+  color: #ddd;
+}
+
+body.dark .topbar {
+  background-color: #2c2c2c;
+  color: #fff;
+}
+
+body.dark .sidebar {
+  background-color: #333;
+  border-color: #555;
+}
+
+body.dark .nav-links a {
+  color: #9ec1cf;
+}
+
+body.dark .nav-links a:hover {
+  background-color: #444;
+}
+
+  </style>
+</head>
+<body id="page-body">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="d-flex align-items-center mb-3">
+    <img src="{{ url_for('static', filename='images/logofor_imp.png') }}" alt="User Logo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+    <h4 class="mb-0">Welcome, {{ user_data[username]['name'] }}</h4>
+
+  </div>
+
+  <ul class="nav-links list-unstyled">
+
+    <!-- Profile -->
+    <li><a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> Profile</a></li>
+
+    <!-- Dashboard Dropdown -->
+    <li>
+      <a href="#dashboardSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+      <ul class="collapse list-unstyled" id="dashboardSubmenu">
+        <li><a href="{{ url_for('dashboard', page='homepage') }}">Home Page</a></li>
+        <li><a href="{{ url_for('dashboard', page='readme') }}">Read Me</a></li>
+        <li><a href="{{ url_for('dashboard', page='main_data') }}">Main Data</a></li>
+        <li><a href="{{ url_for('dashboard', page='forecast') }}">Forecast</a></li>
+        <li><a href="{{ url_for('dashboard', page='container_utilization') }}">Container Utilization</a></li>
+        <li><a href="{{ url_for('dashboard', page='cor_kpis') }}">COR KPIs</a></li>
+        
+      </ul>
+    </li>
+
+   <ul class="collapse list-unstyled ms-3" id="collapseReports">
+  {% if current_page in ['main_data', 'data_base', 'cor_kpis', 'cor_forecast'] %}
+    <li><a href="{{ url_for('dashboard', page=current_page) }}?year=2023">Report 2023</a></li>
+    <li><a href="{{ url_for('dashboard', page=current_page) }}?year=2024">Report 2024</a></li>
+    <li><a href="{{ url_for('dashboard', page=current_page) }}?year=2025">Report 2025</a></li>
+  {% else %}
+    <li><a href="#" onclick="alert('Reports not available for this page'); return false;">Report 2023</a></li>
+    <li><a href="#" onclick="alert('Reports not available for this page'); return false;">Report 2024</a></li>
+    <li><a href="#" onclick="alert('Reports not available for this page'); return false;">Report 2025</a></li>
+  {% endif %}
+</ul>
+
+
+    </li>
+
+<!-- Users Dropdown -->
+<li>
+  <a href="#userSubmenu" data-bs-toggle="collapse" class="dropdown-toggle">
+    <i class="fas fa-users"></i> Users
+  </a>
+  <ul class="collapse list-unstyled ms-3" id="userSubmenu">
+    {% for name, info in user_data.items() %}
+      {% if name != username %}
+        <li><a href="{{ url_for('user_profile', username=name) }}">{{ info.name }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</li>
+
+
+    <!-- Settings Dropdown -->
+<li>
+  <a href="#settingsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+    <i class="fas fa-cogs"></i> Settings
+  </a>
+  <ul class="collapse list-unstyled ms-3" id="settingsSubmenu">
+    <li><a href="{{ url_for('report_problem') }}"><i class="fas fa-bug"></i> Report a Problem</a></li>
+    <li><a href="#">Preferences</a></li>
+    <li><a href="#"><i class="fas fa-question-circle"></i> Help & Support</a></li>
+  </ul>
+</li>
+
+    <!-- Logout -->
+    <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</div>
+
+
+<!-- Topbar -->
+<div class="topbar d-flex justify-content-between align-items-center px-4 py-2">
+  <!-- Left: Title & Sidebar Toggle -->
+  <div class="d-flex align-items-center gap-3">
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebarToggle" class="btn btn-sm btn-outline-secondary me-2" title="Toggle Sidebar">
+      <i class="fas fa-chevron-left" id="toggleIcon"></i>
+    </button>
+
+    <h4 class="mb-0">{{ current_page_title }}</h4>
+    
+    <!-- Search bar -->
+    <form class="d-flex align-items-center">
+      <input class="form-control form-control-sm" type="search" placeholder="Search reports..." aria-label="Search">
+    </form>
+
+    <!-- Preview button -->
+    <a href="{{ powerbi_url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+      Preview <i class="fas fa-external-link-alt"></i>
+    </a>
+  </div>
+ 
+
+  <!-- Right: Dark Mode + Profile Dropdown -->
+  <div class="d-flex align-items-center gap-3">
+    <!-- Dark Mode Toggle -->
+    <button id="darkModeToggle" class="toggle-dark-mode" title="Toggle Dark Mode">🌙</button>
+
+    <!-- Profile Dropdown -->
+    <div class="dropdown">
+      <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+       <img src="{{ url_for('static', filename='images/Unknown_person.jpg') }}"
+     alt="Avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+    </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+        <li class="px-3 py-2">
+          <strong>{{ user_data[username]['name'] }}</strong><br>
+          <small class="text-muted">{{ user_data[username]['email'] }}</small>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fas fa-user me-2"></i> View Profile</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('dashboard') }}"><i class="fas fa-chart-line me-2"></i> View Dashboard</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <iframe
+  id="embedContainer"
+  src="{{ powerbi_url }}"
+  title="Power BI Report"
+  allowfullscreen="true">
+</iframe>
+
+
+    <div id="zoomControls">
+      <button class="btn btn-outline-secondary" onclick="zoomIn()">Zoom In</button>
+      <button class="btn btn-outline-secondary" onclick="zoomOut()">Zoom Out</button>
+    </div>
+  </div>
+    <!-- Scripts -->
+<script>
+  // Sidebar Toggle
+  const sidebar = document.querySelector('.sidebar');
+  const sidebarToggleBtn = document.getElementById('sidebarToggle'); // Renamed
+  const toggleIcon = document.getElementById('toggleIcon');
+
+  sidebarToggleBtn.addEventListener('click', () => { // Using new name
+    sidebar.classList.toggle('collapsed');
+
+    if (sidebar.classList.contains('collapsed')) {
+      sidebar.style.width = '0';
+      document.querySelector('.main-content').style.marginLeft = '0';
+      toggleIcon.classList.remove('fa-chevron-left');
+      toggleIcon.classList.add('fa-chevron-right');
+    } else {
+      sidebar.style.width = '250px';
+      document.querySelector('.main-content').style.marginLeft = '250px';
+      toggleIcon.classList.remove('fa-chevron-right');
+      toggleIcon.classList.add('fa-chevron-left');
+    }
+
+    // Save state to localStorage
+    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+  });
+
+  // Restore sidebar state on load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('sidebarCollapsed') === 'true') {
+      sidebar.classList.add('collapsed');
+      sidebar.style.width = '0';
+      document.querySelector('.main-content').style.marginLeft = '0';
+      toggleIcon.classList.remove('fa-chevron-left');
+      toggleIcon.classList.add('fa-chevron-right');
+    }
+  });
+
+
+  // Dark Mode Toggle
+  const darkModeToggleBtn = document.getElementById('darkModeToggle'); // New name
+  const body = document.getElementById('page-body');
+
+  darkModeToggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark');
+    darkModeToggleBtn.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+    localStorage.setItem('darkMode', body.classList.contains('dark'));
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+      body.classList.add('dark');
+      darkModeToggleBtn.textContent = '☀️';
+    }
+  });
+
+
+  // Zoom Controls
+  let scale = 1;
+  function zoomIn() {
+    scale += 0.1;
+    document.getElementById("embedContainer").style.transform = `scale(${scale})`;
+    document.getElementById("embedContainer").style.transformOrigin = "0 0";
+  }
+
+  function zoomOut() {
+    if (scale > 0.5) {
+      scale -= 0.1;
+      document.getElementById("embedContainer").style.transform = `scale(${scale})`;
+      document.getElementById("embedContainer").style.transformOrigin = "0 0";
+    }
+  }
+</script>
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.19.0/dist/powerbi.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - KPI Collective</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Existing styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .login-container {
+      background: #2d2d2d;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .form-control {
+      background: #333;
+      border-color: #444;
+      color: #fff;
+    }
+
+    body.dark-mode .login-btn {
+      background: #2980b9;
+    }
+    body.dark-mode .login-header h1,
+    body.dark-mode .form-group label
+     {
+      color: #3498db; /* Consistent blue color */
+    }
+    body.dark-mode .demo-note {
+      border-color: #444;
+      color: #b0b0b0;
+    }
+
+    /* Password toggle styles */
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+
+    .toggle-password:hover {
+      color: #3498db;
+    }
+
+    /* Dark mode toggle button */
+    .dark-mode-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #2c3e50;
+    }
+
+    body.dark-mode .dark-mode-toggle {
+      color: #e0e0e0;
+    }
+
+    /* Existing remaining styles */
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header h1 {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header p {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .form-control:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: #2980b9;
+    }
+
+    .demo-note {
+      text-align: center;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #fdeded;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+
+  <div class="login-container">
+    <div class="login-header">
+      <h1>KPI Collective</h1>
+      <p>Please log in to access your Power BI insights</p>
+    </div>
+
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" 
+               id="username" 
+               name="username" 
+               class="form-control" 
+               placeholder="Enter your username" 
+               required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" 
+                 id="password" 
+                 name="password" 
+                 class="form-control" 
+                 placeholder="Enter your password" 
+                 required>
+          <i class="toggle-password fas fa-eye" onclick="togglePassword()"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="demo-note">
+      <p>For demo, use any listed username with password '1234'.</p>
+      <p>Access restricted to authorized personnel.</p>
+    </div>
+  </div>
+
+  <script>
+    // Password visibility toggle
+    function togglePassword() {
+      const passwordField = document.getElementById('password');
+      const eyeIcon = document.querySelector('.toggle-password');
+      
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        passwordField.type = 'password';
+        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    function updateDarkMode(isDark) {
+      body.classList.toggle('dark-mode', isDark);
+      darkModeToggle.textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('darkMode', isDark);
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+      const isDark = !body.classList.contains('dark-mode');
+      updateDarkMode(isDark);
+    });
+
+    // Initialize dark mode from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    updateDarkMode(savedDarkMode);
+  </script>
+</body>
+</html>
